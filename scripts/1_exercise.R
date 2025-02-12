@@ -15,7 +15,7 @@ input_map <- read_tsv('data/raw_data/My_SNPS.map',
 input_ped <- read_delim('data/raw_data/My_SNPS.ped', delim = ' ',
                         col_names = c('family_id', 'individual_id', 'father_id',
                                       'mother_id', 'sex', 'affected_status', 
-                                      # unique identifier for the SNPs column
+                                      # unique identifier for the SNPs columns
                                       paste0('SNP', rep(1:5, each=2), '_', c(1,2))
                                       ))
 
@@ -37,7 +37,7 @@ processed_ped <- input_ped %>%
   # sample #27 have a status of 1 (affected). Keep odd sample_ids unaltered
   affected_status = ifelse(is_even == F & individual_id !=27, 1, affected_status))
 
-## General data munging
+## General data munging for objective 3
 
 # currently we have a load of redundancy as we have columns such as SNP1_1, SNP1_2
 # etc, and if I understand correctly we want them to be just one column for each,
@@ -54,16 +54,19 @@ trimmed_ped <- for_transposing %>%
   select(starts_with('SNP')) %>%
   # transpose it
   t() %>%
+  # convert it to a tibble, for easier manipulation. Store SNP_name in a column
   as_tibble(rownames = 'SNP_name') %>%
+  # combine all of the DNA columns into one
   unite('dna_string', starts_with('V'), sep = ' ')
 
-
+# create the output trans tped file by combining the above object with the 
+# initial map file
 trans_tped <- input_map %>%
   left_join(trimmed_ped) %>%
   # remove redundant 'SNP_name' column
   select(-SNP_name)
 
-
+# save output
 write_delim(trans_tped,
             file = 'data/processed_data/trans.tped',
             delim = ' ',
