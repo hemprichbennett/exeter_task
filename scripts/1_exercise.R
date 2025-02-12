@@ -67,5 +67,14 @@ trans_tped <- input_map %>%
 write_delim(trans_tped,
             file = 'data/processed_data/trans.tped',
             delim = ' ',
-            col_names = F)
+            col_names = F,
+            quote = 'none')
 
+
+
+## now create trans.tfam file (just the first six columns of the ped file)
+processed_ped %>%
+  select(!starts_with('SNP')) %>%
+  select(!is_even) %>%
+  write_tsv('data/processed_data/trans.tfam',
+            col_names = F)
