@@ -66,4 +66,6 @@ trans_tped <- input_map %>%
 
 write_delim(trans_tped,
             file = 'data/processed_data/trans.tped',
-            delim = ' ')
+            delim = ' ',
+            col_names = F)
+
