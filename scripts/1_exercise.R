@@ -78,6 +78,6 @@ write_delim(trans_tped,
 ## now create trans.tfam file (just the first six columns of the ped file)
 processed_ped %>%
   select(!starts_with('SNP')) %>%
-  select(!is_even) %>%
+  select(!c(is_even, family_id)) %>%
   write_tsv('data/processed_data/trans.tfam',
             col_names = F)
